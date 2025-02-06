@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Assistant</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;  /* Light blue background */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .contain {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box {
+            background-color: #e3e8ef;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .info-box h2 {
+            color: #007bff;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .info-box ul {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .info-box ul li {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .response-section {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .response-section p {
+            margin-bottom: 10px;
+        }
+
+        .response-section strong {
+            display: inline-block;
+            width: 150px;
+            color: #007bff;
+        }
+
+        #listenButton {
+            background-color: #28a745;
+            margin-top: 20px;
+            display: none;
+        }
+
+        input[type="checkbox"] {
+            margin-top: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            margin-left: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="contain">
+        <!-- Explanation Section -->
+        <div class="info-box">
+            <h2>Welcome to the AI Voice Assistant</h2>
+            <p>This page allows you to interact with an AI assistant using your voice. Here’s how to use it:</p>
+            <ul>
+                <li><strong>Speak to the assistant:</strong> Click the "Speak" button and ask your question or give a command.</li>
+                <li><strong>View your query:</strong> Your spoken words will appear below in the "You said" section.</li>
+                <li><strong>Get a response:</strong> The AI Assistant will analyze your query and respond in the "Assistant" section.</li>
+                <li><strong>Listen to the response:</strong> You can hear the assistant’s reply by checking the "Listen to audio response" box or clicking the "Listen to Response" button.</li>
+            </ul>
+        </div>
+
+        <!-- AI Voice Assistant Functionality -->
+        <h1>AI Voice Assistant</h1>
+        <button onclick="startListening()">Speak</button>
+
+        <div class="response-section">
+            <p><strong>You said:</strong> <span id="userQuery">...</span></p>
+            <p><strong>Assistant:</strong> <span id="response">...</span></p>
+        </div>
+
+        <div>
+            <input type="checkbox" id="audioCheckbox" checked>
+            <label for="audioCheckbox">Listen to audio response</label>
+        </div>
+
+        <button id="listenButton" onclick="speakResponse()">Listen to response</button>
+    </div>
+
+    <script>
+        function startListening() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-US";
+            recognition.onresult = function(event) {
+                var userQuery = event.results[0][0].transcript;
+                document.getElementById('userQuery').innerText = userQuery;
+
+                // Send the query to the Django backend
+                sendQuery(userQuery);
+            };
+            recognition.onerror = function(event) {
+                alert("Error occurred in recognition: " + event.error);
+            };
+            recognition.start();
+        }
+
+        function sendQuery(query) {
+            fetch("{% url 'assistant' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: new URLSearchParams({
+                    "query": query
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                var assistantResponse = data.response;
+                document.getElementById('response').innerText = assistantResponse;
+
+                // Show the listen button after receiving the response
+                document.getElementById('listenButton').style.display = 'inline';
+
+                // Check if the user wants to listen to the response
+                if (document.getElementById('audioCheckbox').checked) {
+                    speakResponse(assistantResponse);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = "Error in processing the request.";
+            });
+        }
+
+        function speakResponse(text) {
+            var speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+</body>
+</html>
+{% endblock %}

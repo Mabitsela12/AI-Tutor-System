@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracted Text and Assistance</title>
+    <style>
+        h2 {
+            text-align: center;
+        }
+        #questionForm {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        async function askQuestion() {
+            const question = document.querySelector('#questionInput').value;
+            const text = document.querySelector('#extractedText').textContent;
+            const response = await fetch('/ask_question/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text, question: question })
+            });
+
+            const result = await response.json();
+            if (result.error) {
+                document.querySelector('#output').textContent = 'Error: ' + result.error;
+            } else {
+                document.querySelector('#aiResponse').textContent = result.answer;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Extracted Text</h1>
+
+    <div id="extractedText">{{ extracted_text }}</div>
+
+    <div id="questionForm">
+        <h2>Ask a auestion based on the extracted Text:</h2>
+        <input type="text" id="questionInput" placeholder="Type your question here...">
+        <button onclick="askQuestion()">Ask question</button>
+    </div>
+
+    <h2>AI assistance:</h2>
+    <div id="aiResponse"></div>
+
+    <div id="output"></div>
+</body>
+</html>

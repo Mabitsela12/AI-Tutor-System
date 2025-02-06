@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #343a40;">
+    <div class="container-fluid px-4 px-lg-5">
+        <a class="navbar-brand" href="{% url 'home' %}" style="font-size: 3.0rem; font-weight: bold;">Start Learning</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <button onclick="history.back()" class="btn btn-outline-light me-2">Back</button>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'profile' %}" class="btn btn-outline-light me-2">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light me-2">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light me-2" href="{% url 'signup' %}">Sign up</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

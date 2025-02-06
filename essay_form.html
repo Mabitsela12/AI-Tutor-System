@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essay Checker</title>
+    <style>
+        textarea {
+            width: 100%;  /* Make the textarea take the full width of its container */
+            height: 200px; /* Reduced height */
+            resize: vertical; /* Allow vertical resizing */
+        }
+        .tips {
+            background-color: #f9f9f9; /* Light gray background */
+            border: 15px solid #ddd; /* Border for tips section */
+            padding: 50px; /* Padding inside tips section */
+            margin-bottom: 20px; /* Margin below tips section */
+        }
+    </style>
+</head>
+<body>
+    <h1>Essay Checker</h1>
+    
+    <div class="tips">
+        <h2>Essay writing tips</h2>
+        <ul>
+            <li><strong>Understand the prompt:</strong> Make sure you clearly understand what the essay question is asking.</li>
+            <li><strong>Outline your ideas:</strong> Create a rough outline of your essay to organize your thoughts.</li>
+            <li><strong>Introduction:</strong> Start with a hook to grab the reader's attention, followed by a clear thesis statement.</li>
+            <li><strong>Body paragraphs:</strong> Each paragraph should focus on a single idea that supports your thesis. Start each paragraph with a topic sentence.</li>
+            <li><strong>Use examples:</strong> Support your arguments with relevant examples and evidence.</li>
+            <li><strong>Conclusion:</strong> Summarize your main points and restate the thesis in a new way. End with a final thought or call to action.</li>
+            <li><strong>Proofread:</strong> Always proofread your essay for grammar, spelling, and clarity.</li>
+        </ul>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Check essay</button>
+    </form>
+
+    {% if corrected_text %}
+        <h2>Corrected essay:</h2>
+        <p>{{ corrected_text }}</p>
+    {% endif %}
+    <br>
+    <br>
+</body>
+<br>
+</html>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade {{ grade }} Subjects</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Global container to hold subject buttons and blue buttons */
+        .container-content {
+            display: flex;
+            flex-direction: column; /* Stack the sections vertically */
+            gap: 20px; /* Add space between the two sections */
+            margin-top: 40px;
+        }
+
+        /* Style for the subject buttons section */
+        .subject-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 10px;
+            background: #f0f8ff; /* Light background color, same as section one */
+            border-radius: 8px; /* Rounded corners for the section */
+        }
+
+        /* Style for the blue buttons section (under the subject buttons) */
+        .blue-buttons-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 10px;
+            gap: 10px; /* Add space between buttons */
+            max-height: 600px; /* Limit the height to align with navbar and footer */
+            overflow-y: auto; /* Allow scrolling if content overflows */
+            background: #f0f8ff; /* Same background as section one */
+            border-radius: 8px; /* Matching rounded corners */
+        }
+
+        /* Button styling for subjects */
+        .btn-subject {
+            background-color: #28a745;
+            color: white;
+            font-size: 18px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-subject:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        /* Blue button styles */
+        .btn-info {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            padding: 15px 30px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-info:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Footer Styling */
+        .footer {
+            background-color: rgb(55, 114, 114);
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+            position: relative;
+            clear: both;
+        }
+
+        .footer .btn-outline-light {
+            border-color: white;
+            color: white;
+            font-size: 14px;
+            padding: 8px 16px;
+            margin: 5px;
+        }
+
+        .footer .btn-outline-light:hover {
+            background-color: rgba(4, 157, 246, 0.2);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="mb-4 text-center">Subjects for grade {{ grade }}</h1>
+        <h2 class="text-center">Select a subject to get the topics</h2>
+
+        <!-- Container for both sections (subject buttons + blue buttons) -->
+        <div class="container-content">
+            <!-- Subject buttons section -->
+            <div class="subject-section">
+                <h3>Available subjects</h3>
+                {% if subjects %}
+                    {% for subject in subjects %}
+                        <a href="{% url 'subject_detail' grade=grade subject=subject %}" class="btn btn-subject">{{ subject }}</a>
+                    {% endfor %}
+                {% else %}
+                    <p>No subjects available for this grade.</p>
+                {% endif %}
+            </div>
+
+            <!-- Blue buttons section (Essay, Quiz, etc.) -->
+            <div class="blue-buttons-section">
+                <h1 class="mb-4">Test your knowledge</h1>
+                <br>
+                <div class="btn-group" role="group" aria-label="Knowledge Test Buttons">
+                    <a href="{% url 'check_essay' %}" class="btn btn-info btn-lg mx-2">Essay assistant</a>
+                    <a href="{% url 'search' %}" class="btn btn-info btn-lg mx-2">Tutorial videos</a>
+
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Knowledge Test Buttons">
+                    <a href="{% url 'quiz_combined' %}" class="btn btn-info btn-lg mx-2">Quizzes</a>
+                    <a href="{% url 'chat_view' %}" class="btn btn-info btn-lg mx-2">Chat with me</a>
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Knowledge Test Buttons">
+                    <a href="{% url 'new' %}" class="btn btn-info btn-lg mx-2">Scan To extract text</a>
+                    <a href="{% url 'assistant' %}" class="btn btn-info btn-lg mx-2">AI audio assistant</a>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div id="subject-content">
+            {% for subject, content in subject_contents.items %}
+                <div class="subject-detail" id="content-{{ subject|slugify }}" style="display:none;">
+                    <h3>{{ subject }}</h3>
+                    <ul class="list-group">
+                        {% for item in content %}
+                            <li class="list-group-item">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Add quiz button inside subject content -->
+                    <a href="{{ quiz_links.subject }}" class="btn btn-warning mt-3">Start quiz</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+{% endblock %}
+
+without changing anything can you also make this homepage to fit as media.. myb size the picture if possible but dont change how it look
