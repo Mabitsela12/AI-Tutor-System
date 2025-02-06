@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main content -->
+<div class="container">
+    <h1 class="mb-4 text-center">Subjects for grade {{ grade }}
+        <br>
+        <br>
+        <p>Select a subject to get the topics</p>
+        <br>
+    </h1>
+    
+    <div class="text-center mb-4">
+        {% if subjects %}
+            {% for subject in subjects %}
+                <a href="{% url 'subject_detail' grade=grade subject=subject %}" class="btn btn-info">{{ subject }}</a>
+            {% endfor %}
+        {% else %}
+            <p>No subjects available for this grade.</p>
+        {% endif %}
+
+        <br>
+
+        <a href="{% url 'subject_selection' grade=grade %}" class="btn btn-primary">Go to subjects</a>
+        <br>
+    
+
+    </div>        
+
+    <hr>
+
+    <div id="subject-content">
+        {% for subject, content in subject_contents.items %}
+            <div class="subject-detail" id="content-{{ subject|slugify }}" style="display:none;">
+                <h3>{{ subject }}</h3>
+                <ul class="list-group">
+                    {% for item in content %}
+                        <li class="list-group-item">{{ item }}</li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Add quiz button inside subject content -->
+                <a href="{{ quiz_links.subject }}" class="btn btn-warning mt-3">Start quiz</a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+                                
+                                    

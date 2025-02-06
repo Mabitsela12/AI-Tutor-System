@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Conversation</title>
+    <style>
+        /* General body and layout styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header style */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        /* Styling for chat area, messages, input fields, and buttons */
+        #chat_area {
+            width: 100%;
+            flex-grow: 1;
+            height: 300px; /* Set a fixed height to avoid overflow */
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .user-msg {
+            background-color: #f1f1f1;
+        }
+
+        .chatbot-msg {
+            background-color: #d3f8d3;
+        }
+
+        /* Form and label styling */
+        form {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Design: Ensure mobile-friendly layout */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            /* Adjust the chat area height for mobile */
+            #chat_area {
+                height: 200px; /* Adjust height for better fit on small screens */
+            }
+
+            /* Form and input styling for small screens */
+            input[type="text"] {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+
+            button {
+                padding: 10px 18px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Style for the section container */
+        .container {
+            width: 100%;
+            max-width: 600px; /* Limit the max-width to avoid over-expanding */
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            /* Remove position: fixed so the footer scrolls with the content */
+            position: relative;
+            bottom: 0;
+        }
+    </style>
+    <script>
+        async function sendMessage(type) {
+            const userInput = document.getElementById(type + "_input").value;
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+            // Send the appropriate input to the server based on type
+            const response = await fetch("{% url 'chat_step' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken
+                },
+                body: type + "=" + encodeURIComponent(userInput)
+            });
+
+            const data = await response.json();
+            const chatArea = document.getElementById("chat_area");
+
+            // Add user message
+            const userMsg = document.createElement("div");
+            userMsg.classList.add("message", "user-msg");
+            userMsg.innerText = `${type === 'question' ? 'Question' : 'Answer'}: ${userInput}`;
+            chatArea.appendChild(userMsg);
+
+            // Add chatbot reply
+            const chatbotMsg = document.createElement("div");
+            chatbotMsg.classList.add("message", "chatbot-msg");
+            chatbotMsg.innerText = "Text Message: " + data.reply;
+            chatArea.appendChild(chatbotMsg);
+
+            // Clear the input field
+            document.getElementById(type + "_input").value = "";
+
+            // Scroll to the latest message
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Chatbot Conversation</h1>
+
+        <div class="form-container">
+            <form id="question_form" onsubmit="event.preventDefault(); sendMessage('question');">
+                {% csrf_token %}
+                <label for="question_input">Enter your question:</label>
+                <input type="text" id="question_input" name="question" required>
+                <button type="button" onclick="sendMessage('question')">Submit question</button>
+            </form>
+
+            <form id="answer_form" onsubmit="event.preventDefault(); sendMessage('answer');">
+                <label for="answer_input">Enter your answer:</label>
+                <input type="text" id="answer_input" name="answer" required>
+                <button type="button" onclick="sendMessage('answer')">Submit answer</button>
+            </form>
+        </div>
+
+        <div id="chat_area">
+            <!-- Chat history will appear here -->
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}

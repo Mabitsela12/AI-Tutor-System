@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+     
+<br>
+    <h1>Quiz for grade {{ selected_grade }} - subject: {{ selected_subject }}</h1>
+<br>
+    <!-- Grade and Subject Selector -->
+    <form method="get">
+        <strong><label for="grade">Select grade:</label></strong>
+        <select name="grade" id="grade" onchange="this.form.submit()">
+            {% for grade in grades %}
+                <option value="{{ grade }}" {% if grade == selected_grade %}selected{% endif %}>Grade {{ grade }}</option>
+            {% endfor %}
+        </select>
+
+        <strong><label for="subject">Select subject:</label></strong>
+        <select name="subject" id="subject" onchange="this.form.submit()">
+            {% for subject in subjects %}
+                <option value="{{ subject }}" {% if subject == selected_subject %}selected{% endif %}>{{ subject }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- Display Quiz -->
+    <h2>Take quiz</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for question in quiz %}
+            <h4>{{ forloop.counter }}. {{ question.question }}</h4>
+            {% for option in question.options %}
+                <input type="radio" name="question_{{ forloop.counter }}" value="{{ option }}"> {{ option }}<br>
+            {% endfor %}
+        {% endfor %}
+        <button type="submit">Submit here</button>
+    </form>
+    <br>
+    <br>
+    <br>
+    <br>
+    <!-- Display Results (if available) -->
+    {% if results %}
+        <h2>Results</h2>
+        <ul>
+            <div>
+                {% for result in results %}
+                    <h3>Question: {{ result.question }}</h3>
+                    <p>Your answer: {{ result.user_answer }}</p>
+                    <p>Correct answer: {{ result.correct_answer }}</p>
+                    <p>Status: {{ result.result }}</p>
+                {% endfor %}
+            </div>            
+        </ul>
+
+        <!-- Try Again Button -->
+        <form method="get">
+            <input type="hidden" name="grade" value="{{ selected_grade }}">
+            <input type="hidden" name="subject" value="{{ selected_subject }}">
+            <button type="submit">Try again</button>
+        </form>
+    {% endif %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <style>
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    
+</body>
+</html>
+<br>
+<br>
+{% endblock %}

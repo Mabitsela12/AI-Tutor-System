@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Conversation</title>
+    <style>
+        /* Same styling as chat_form.html */
+    </style>
+</head>
+<body>
+    <h1>Chatbot Conversation</h1>
+
+    <form action="{% url 'chat_step' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="user_input" placeholder="Enter your question or answer..." required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="chat_area">
+        <!-- Full conversation will be displayed here -->
+        {% for message in conversation %}
+            <div class="message {{ message.role }}-msg">
+                {{ message.content }}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

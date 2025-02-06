@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 80%;
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .section {
+            background-color: #fff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .section h3 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+        .section p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .locations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .location {
+            flex: 1 1 calc(50% - 20px);
+            padding: 15px;
+            background-color: #e9f5ff;
+            border-radius: 8px;
+        }
+        .location h4 {
+            margin-top: 0;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Contact Us</h2>
+
+    <div class="section">
+        <h3>Joining Us?</h3>
+        <p>We'd love to answer any questions you may have:</p>
+        <h4>Parents</h4>
+        <p><a href="#">Support form</a></p>
+        <p>Email: <a href="#">support@aitutor.com</a></p>
+        <p>Phone: None</p>
+        <p><a href="#">Membership details</a></p>
+    </div>
+
+    <div class="section">
+        <h4>Teachers</h4>
+        <p>Email: <a href="#">orders@aitutor.com</a></p>
+        <p>Phone: None</p>
+        <p><a href="#">Membership details</a></p>
+    </div>
+
+    <div class="section">
+        <h3>Need Support?</h3>
+        <p>We're always here to help:</p>
+        <h4>AI TUTOR Members</h4>
+        <p><a href="#">Help Centre</a></p>
+        <p><a href="#">Support form</a></p>
+        <p>Email: <a href="#">help@aitutor.com</a></p>
+    </div>
+
+    <div class="section">
+        <h3>Company Locations</h3>
+        <div class="locations">
+            <div class="location">
+                <h4>Pretoria South</h4>
+                <p>Soshanguve Campus</p>
+                <p>4IR TUT LAB</p>
+                <p>South Africa</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>About AI TUTOR LEARNING</h3>
+        <p>Email: <a href="#">info@aituotr.com</a></p>
+        <p>Press Inquiries: <a href="#">press@aitutor.com</a></p>
+    </div>
+</div>
+
+</body>
+</html>
+
+{% endblock %}

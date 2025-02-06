@@ -1,0 +1,54 @@
+<style>
+    /* Footer Styling */
+    .footer {
+        background-color: rgb(55, 114, 114); /* Dark teal background */
+        color: white;
+        margin-top: auto;
+        padding: 20px 0; /* Padding for better spacing */
+    }
+
+    .footer .btn-outline-light {
+        border-color: white;
+        color: white;
+        font-size: 14px;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+
+    .footer .btn-outline-light:hover {
+        background-color: rgba(4, 157, 246, 0.2); /* Light blue hover effect */
+        color: #fff;
+    }
+
+    /* Responsive Footer Styling */
+    @media (max-width: 768px) {
+        .footer .btn-outline-light {
+            font-size: 12px; /* Smaller buttons for mobile */
+            padding: 6px 12px;
+        }
+
+        .footer .container {
+            text-align: center; /* Center content on smaller screens */
+        }
+
+        .footer p {
+            font-size: 12px; /* Reduce font size for text */
+        }
+    }
+</style>
+
+<footer class="footer mt-auto">
+    <div class="container">
+        <!-- Copyright Text -->
+        <p class="m-0 text-center">Copyright &copy; AI Tutor 2024</p>
+
+        <!-- Buttons for User Guides, Contact Us, Terms and Service, Help Center -->
+        <div class="d-flex justify-content-center flex-wrap mt-3">
+            <a href="{% url 'user_guide' %}" class="btn btn-outline-light mx-2">User guides</a>
+            <a href="{% url 'contact_us' %}" class="btn btn-outline-light mx-2">Contact us</a>
+            <a href="{% url 'about' %}" class="btn btn-outline-light mx-2">About</a>
+            <a href="{% url 'terms_and_conditions' %}" class="btn btn-outline-light mx-2">Terms & service</a>
+            <a href="{% url 'help_center' %}" class="btn btn-outline-light mx-2">Help center</a>
+        </div>
+    </div>
+</footer>

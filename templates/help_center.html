@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin: 10px 0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .contact-form {
+            margin-top: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Help Center</h1>
+
+        <div class="section">
+            <h2>1. Frequently Asked Questions (FAQs)</h2>
+            <ul>
+                <li>How do I create an account?</li>
+                <li>What should I do if I forget my password?</li>
+                <li>What grades and subjects are supported?</li>
+                <li>Can parents monitor their child’s activity?</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>2. Getting Started</h2>
+            <p>Learn how to create an account, log in, and navigate the platform. Follow these simple steps to get started:</p>
+            <ul>
+                <li>Create your account by clicking on the "Sign Up" button.</li>
+                <li>Verify your email address.</li>
+                <li>Log in and explore the dashboard.</li>
+                <li>Start a lesson, quiz, or tutorial.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>3. Contact Support</h2>
+            <p>If you're facing any issues or have specific questions, feel free to reach out to our support team:</p>
+            <ul>
+                <li>Email: <a href="mailto:support@ai-tutor.com">support@ai-tutor.com</a></li>
+                <li>Phone: +27 123 456 7890</li>
+                <li>Live Chat: Available on the platform (bottom-right corner).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>4. Troubleshooting Tips</h2>
+            <p>Having trouble? Here are solutions to common issues:</p>
+            <ul>
+                <li><strong>I can’t log in:</strong> Check your email and password or reset your password.</li>
+                <li><strong>The page is not loading:</strong> Refresh your browser or clear the cache.</li>
+                <li><strong>AI tutor is not responding:</strong> Ensure you have a stable internet connection.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>5. Feedback and Suggestions</h2>
+            <p>We value your feedback! Let us know how we can improve:</p>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Feedback or Suggestions" rows="5" required></textarea>
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>6. Updates and Announcements</h2>
+            <p>Stay informed about new features, updates, and maintenance schedules. Visit this section regularly for announcements.</p>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
