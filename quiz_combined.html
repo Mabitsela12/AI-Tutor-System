@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Generate quiz</title>
+        <style>
+            /* General page styling */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f7f6;
+                margin: 0;
+                padding: 0;
+            }
+
+            .contain {
+                margin: 20px auto;
+                max-width: 800px;
+                padding: 20px;
+                background-color: #fff;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+            }
+
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            label {
+                font-weight: bold;
+                color: #34495e;
+            }
+
+            select, input[type="text"], button {
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                outline: none;
+            }
+
+            select:focus, input[type="text"]:focus {
+                border-color: #3498db;
+            }
+
+            button {
+                background-color: #3498db;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                font-weight: bold;
+            }
+
+            button:hover {
+                background-color: #2980b9;
+            }
+
+            /* Styling for error messages */
+            .error {
+                color: #e74c3c;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            /* Styling for the generated quiz */
+            .generated-quiz {
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #ecf0f1;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .generated-quiz p {
+                font-size: 18px;
+                color: #34495e;
+            }
+
+            .generated-quiz input {
+                width: 100%;
+                margin: 10px 0;
+                padding: 12px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .generated-quiz button {
+                background-color: #27ae60;
+                color: white;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+            .generated-quiz button:hover {
+                background-color: #2ecc71;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contain">
+            <h1>Generate quiz</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <strong><label for="grade">Select grade:</label></strong>
+                <select name="grade" id="grade" required>
+                    <option value="">Select grade</option>
+                    {% for grade in subjects_map %}
+                        <option value="{{ grade }}" {% if selected_grade == grade %}selected{% endif %}>Grade {{ grade }}</option>
+                    {% endfor %}
+                </select>
+            
+                {% if selected_grade %}
+                    <strong><label for="subject">Select subject:</label></strong>
+                    <select name="subject" id="subject" required>
+                        <option value="">Select subject</option>
+                        {% for subject in subjects_for_selected_grade %}
+                            <option value="{{ subject }}" {% if selected_subject == subject %}selected{% endif %}>{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            
+                {% if selected_subject %}
+                    <strong><label for="topic">Topic:</label></strong>
+                    <input type="text" name="topic" id="topic" required>
+                {% endif %}
+                <button type="submit">Generate quiz</button>
+            </form>
+
+            {% if quiz_generated %}
+                <div class="generated-quiz">
+                    <h3>Generated quiz</h3>
+                    <form method="POST" action="{% url 'submit_quiz' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="grade" value="{{ selected_grade }}">
+                        <input type="hidden" name="subject" value="{{ selected_subject }}">
+                        <input type="hidden" name="topic" value="{{ selected_topic }}">
+
+                        {% for key, question in questions.items %}
+                            <div>
+                                <p>{{ question }}</p>
+                                <input type="text" name="answer_{{ forloop.counter }}" placeholder="Your answer" required>
+                            </div>
+                        {% endfor %}
+                        <br><button type="submit">Submit answers</button><br><br>
+                    </form>
+                </div>
+            {% endif %}
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+    </body>
+</html>
+{% endblock %}

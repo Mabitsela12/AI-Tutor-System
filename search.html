@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube video search</title>
+    <style>
+        body {
+            background-color: lightblue;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        h1, h2, h3 {
+            color: rgb(24, 23, 23);
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+    </style>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+    <div class="container mt-5">
+        <h1>Search tutorials videos</h1>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="question" class="form-control" placeholder="Enter your question" required>
+            <button type="submit" class="btn btn-primary mt-3">Search</button>
+        </form>
+
+        {% if video_data %}
+        <div class="mt-4">
+            <h3>{{ video_data.title }}</h3>
+            <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/{{ video_data.video_id }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+            <p>{{ video_data.description }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <style>
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+{% endblock %}

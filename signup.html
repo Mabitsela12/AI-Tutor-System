@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>Start Learning</h2>
+    
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        
+        <label for="first-name">First name:</label>
+        <input type="text" id="first-name" name="first_name" required placeholder="Enter your first name" aria-label="First Name">
+        
+        <label for="last-name">Last name:</label>
+        <input type="text" id="last-name" name="last_name" required placeholder="Enter your last name" aria-label="Last Name">
+        
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username" aria-label="Username">
+        <div class="note">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</div>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email" aria-label="Email">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required placeholder="Create a password" aria-label="Password">
+        <div class="note">Your password must contain at least 8 characters, and can’t be a commonly used password.</div>
+
+        <label for="password-confirm">Password confirmation:</label>
+        <input type="password" id="password-confirm" name="password-confirm" required placeholder="Confirm your password" aria-label="Confirm Password">
+        <div class="note">Enter the same password as before, for verification.</div>
+
+        <button type="submit">Sign up</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background */
+    }
+    .signup-container {
+        max-width: 400px;
+        margin: 100px auto; /* Centering the form */
+        padding: 20px;
+        background-color: white; /* White background for form */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #343a40; /* Dark text color */
+    }
+    label {
+        font-weight: bold; /* Bold labels */
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+        width: 100%; /* Full width inputs */
+        padding: 10px; /* Padding for inputs */
+        margin: 10px 0; /* Spacing between inputs */
+        border: 1px solid #ced4da; /* Light border */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 16px; /* Font size */
+    }
+    button {
+        width: 100%; /* Full width button */
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff; /* Primary button color */
+        color: white; /* White text color */
+        font-size: 16px; /* Font size */
+        cursor: pointer; /* Pointer cursor on hover */
+    }
+    button:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+    .note {
+        font-size: 0.9em; /* Smaller font for notes */
+        color: #6c757d; /* Gray color for notes */
+        margin-bottom: 10px; /* Spacing below notes */
+    }
+    p {
+        text-align: center;
+    }
+</style>
+{% endblock %}

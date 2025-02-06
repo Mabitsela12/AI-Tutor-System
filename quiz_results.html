@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Quiz results</h1>
+<p>Your score: {{ score }}%</p>
+<p>Correct Answers: {{ correct_count }} out of {{ total_questions }}</p>
+
+<h2>Your Answers:</h2>
+<ul>
+    {% for question, answers in user_answers.items %}
+        <li>
+            <strong>{{ question }}:</strong><br>
+            Your answer: {{ answers.user_answer }}<br>
+            Correct answer: {{ answers.correct_answer }}<br>
+            {% if answers.is_correct %}
+                Correct
+            {% else %}
+                Incorrect
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

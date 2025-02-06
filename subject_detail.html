@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load custom_filters %}
+<br>
+<br>
+<div class="container">
+    <h1 class="text-center">{{ subject }} - Grade {{ grade }}</h1>
+    <hr>
+<br>
+    <h2>Select a topic:</h2>
+    <ul class="list-group">
+        {% for topic in topics %}
+            <li class="list-group-item">
+                <button class="btn btn-link topic-btn" data-topic="{{ topic|urlencode }}">{{ topic }}</button>
+            </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <div id="topic-content" class="mt-4">
+        <!-- Topic content will be displayed here -->
+    </div>
+</div>
+<br>
+<script>
+    document.querySelectorAll('.topic-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const topic = button.getAttribute('data-topic');
+            const grade = {{ grade }};
+            const subject = "{{ subject|urlencode }}";
+
+            // Show loading message
+            document.getElementById('topic-content').innerHTML = '<p>Loading content...</p>';
+
+            fetch(`/topic-content/${grade}/${subject}/${topic}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Ensure data.content is not undefined or empty
+                    if (data.content) {
+                        document.getElementById('topic-content').innerHTML = `
+                            <h3>${decodeURIComponent(topic)}</h3>
+                            <p>${data.content}</p>
+                        `;
+                    } else {
+                        document.getElementById('topic-content').innerHTML = '<p>No content available for this topic.</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('topic-content').innerHTML = '<p>An error occurred while fetching the content.</p>';
+                });
+        });
+    });
+</script>
+
+{% endblock %}

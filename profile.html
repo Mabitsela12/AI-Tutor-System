@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">User Profile</h1>
+    
+    <!-- Basic Info -->
+    <div class="card mb-4">
+        <div class="card-header">Basic information</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <br>
+                    <h5>Username: {{ user.username }}</h5>
+                    <br>
+                    <h5>Email: {{ user.email }}</h5>
+                    {% if user.first_name %}
+                        <h6>First name: {{ user.first_name }}</h6>
+                    {% else %}
+                        <h6>First name not available</h6>
+                    {% endif %}
+
+                    {% if user.last_name %}
+                        <h6>Last name: {{ user.last_name }}</h6>
+                    {% else %}
+                        <h6>Last name not available</h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Settings -->
+    <div class="card mb-4">
+        <div class="card-header">Account settings</div>
+        <div class="card-body">
+            <a href="{% url 'change_password' %}" class="btn btn-secondary">Change password</a>
+            <a href="{% url 'edit_profile' %}" class="btn btn-secondary">Edit profile</a>
+        </div>
+    </div>
+
+    <!-- Learning Progress -->
+    <div class="card mb-4">
+        <div class="card-header">Learning progress</div>
+        <div class="card-body">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="grade_level">Current grade level:</label>
+                    <select class="form-control" id="grade_level" name="grade_level">
+                        {% for grade in grade_choices %}
+                            <option value="{{ grade }}" {% if user.profile.grade_level == grade %}selected{% endif %}>{{ grade }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <p><strong>Subjects completed:</strong> {{ user.profile.completed_subjects|length }}</p>
+                <p><strong>Quizzes taken:</strong> {{ user.profile.quiz_count }}</p>
+                <p><strong>Last accessed subject:</strong> {{ user.profile.last_subject_accessed }}</p>
+
+                <div class="form-group mt-3">
+                    <label for="performance_rating">Rate Your Performance:</label>
+                    <select class="form-control" id="performance_rating" name="performance_rating">
+                        <option value="1" {% if user.profile.performance_rating == 1 %}selected{% endif %}>1 - Poor</option>
+                        <option value="2" {% if user.profile.performance_rating == 2 %}selected{% endif %}>2 - Fair</option>
+                        <option value="3" {% if user.profile.performance_rating == 3 %}selected{% endif %}>3 - Good</option>
+                        <option value="4" {% if user.profile.performance_rating == 4 %}selected{% endif %}>4 - Very good</option>
+                        <option value="5" {% if user.profile.performance_rating == 5 %}selected{% endif %}>5 - Excellent</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Save progress</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="card mb-4">
+        <div class="card-header">Preferences</div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'update_preferences' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="ai_voice">Preferred AI voice:</label>
+                    <select class="form-control" id="ai_voice" name="ai_voice">
+                        <option value="default" {% if user.profile.ai_voice == 'default' %}selected{% endif %}>Default</option>
+                        <option value="female" {% if user.profile.ai_voice == 'female' %}selected{% endif %}>Female</option>
+                        <option value="male" {% if user.profile.ai_voice == 'male' %}selected{% endif %}>Male</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Save preferences</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- History and Saved Content -->
+    <div class="card mb-4">
+        <div class="card-header">History and saved content</div>
+        <div class="card-body">
+            <p><strong>Last accessed subject:</strong> {{ user.profile.last_subject_accessed }}</p>
+            <p><strong>Bookmarked tutorials:</strong> {{ user.profile.bookmarked_tutorials|length }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

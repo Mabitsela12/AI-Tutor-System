@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz results</title>
+</head>
+<body>
+    <h1>Quiz results</h1>
+    <p>Your score: {{ score }}%</p>
+    <p>Correct answers: {{ correct_count }} out of {{ total_questions }}</p>
+
+    <h2>Review your answers</h2>
+    {% for question, answer in user_answers.items %}
+        <p>
+            <strong>{{ question }}</strong><br>
+            Your answer: {{ answer.user_answer }}<br>
+            Correct Answer: {{ answer.correct_answer }}<br>
+            {% if answer.is_correct %}
+                <strong>Correct!</strong>
+            {% else %}
+                <strong>Incorrect</strong>
+            {% endif %}
+        </p>
+    {% endfor %}
+</body>
+</html>
+{% endblock %}

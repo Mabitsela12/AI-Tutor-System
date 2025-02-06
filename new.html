@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="contain">
+    <h1>Capture Image and Extract Text</h1>
+
+    <div id="camera-containe">
+        <video id="video" width="100%" height="auto" autoplay></video>
+        <div class="button-containi">
+            <button id="switch-camera" class="btn">Switch camera</button>
+            <button id="snap" class="btn">Capture photo</button>
+        </div>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    </div>
+
+    <h2>Extracted text:</h2>
+    <div id="extracted-text" class="extracted-text"></div>
+
+    <div id="question-section" class="question-section" style="display:none;">
+        <h2>Ask a question</h2>
+        <input type="text" id="question" placeholder="Enter your question" class="question-input">
+        <button id="ask" class="btn">Ask</button>
+        <div id="answer"></div>
+    </div>
+</div>
+
+<script>
+    let video = document.getElementById('video');
+    let canvas = document.getElementById('canvas');
+    let context = canvas.getContext('2d');
+    let extractedTextDiv = document.getElementById('extracted-text');
+    let questionSection = document.getElementById('question-section');
+    let useFrontCamera = true; // Start with front camera
+
+    const startCamera = () => {
+        const constraints = {
+            video: {
+                facingMode: useFrontCamera ? 'user' : 'environment',
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            }
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                console.error("Error accessing camera:", err);
+            });
+    };
+
+    // Initialize the camera
+    startCamera();
+
+    // Switch camera
+    document.getElementById('switch-camera').addEventListener('click', () => {
+        useFrontCamera = !useFrontCamera;
+        const stream = video.srcObject;
+        const tracks = stream ? stream.getTracks() : [];
+
+        // Stop all tracks to release the camera
+        tracks.forEach(track => track.stop());
+
+        // Restart camera with the new facing mode
+        startCamera();
+    });
+
+    // Capture image from video stream
+    document.getElementById('snap').addEventListener('click', () => {
+        context.drawImage(video, 0, 0, 640, 480);
+        const imageData = canvas.toDataURL('image/png');
+
+        // Send image to backend for text extraction
+        fetch("{% url 'extract_text' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.text) {
+                extractedTextDiv.innerHTML = `<p>${data.text}</p>`;
+                questionSection.style.display = 'block';
+            } else {
+                extractedTextDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error extracting text:', error);
+            extractedTextDiv.innerHTML = `<p>Error extracting text.</p>`;
+        });
+    });
+
+    // Ask a question based on the extracted text
+    document.getElementById('ask').addEventListener('click', () => {
+        const question = document.getElementById('question').value;
+        const extractedText = extractedTextDiv.innerText;
+
+        // Send extracted text and question to backend
+        fetch("{% url 'ask_question' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: extractedText, question: question })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.answer) {
+                document.getElementById('answer').innerHTML = `<p>Answer: ${data.answer}</p>`;
+            } else {
+                document.getElementById('answer').innerHTML = `<p>Error: ${data.error}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error getting answer:', error);
+            document.getElementById('answer').innerHTML = `<p>Error getting answer.</p>`;
+        });
+    });
+</script>
+
+<style>
+    /* General Container Styling */
+    .contain {
+        padding: 20px;
+        max-width: 100%;
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+    }
+
+    h1, h2 {
+        text-align: center;
+    }
+
+    /* Camera Containe */
+    #camera-containe {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Buttons Styling */
+    .button-containi {
+        margin-top: 10px;
+    }
+
+    .btn {
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Extracted Text */
+    .extracted-text {
+        padding: 10px;
+        background-color: #f7f7f7;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    /* Question Section */
+    .question-section {
+        text-align: center;
+    }
+
+    .question-input {
+        padding: 10px;
+        margin-top: 10px;
+        width: 80%;
+        max-width: 400px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .question-input:focus {
+        border-color: #007BFF;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+        .contain {
+            padding: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .question-input {
+            width: 90%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .btn {
+            font-size: 14px;
+            padding: 8px 15px;
+        }
+
+        .question-input {
+            font-size: 14px;
+        }
+    }
+</style>
+
+{% endblock %}
